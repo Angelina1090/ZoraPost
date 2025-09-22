@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZoraPost - Creators Hub</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background: #111;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 1rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+      color: #111;
+    }
+    .creator-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    .creator {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .creator h3 {
+      margin: 0 0 0.5rem;
+    }
+    footer {
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    footer a {
+      color: #ffcc00;
+      margin: 0 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><strong>ZoraPost</strong></div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#creators">Creators</a>
+      <a href="https://twitter.com/zora" target="_blank">Twitter</a>
+      <a href="https://discord.gg/zora" target="_blank">Discord</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>Featured Zora Creators</h1>
+    <div id="creator-list" class="creator-list">
+      <p>Loading creators...</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 ZoraPost. Built for the Zora community. 
+      <br>
+      Follow us on 
+      <a href="https://twitter.com/zora" target="_blank">Twitter</a> 
+      and 
+      <a href="https://discord.gg/zora" target="_blank">Discord</a>.
+    </p>
+  </footer>
+
+  <script>
+    async function fetchCreators() {
+      try {
+        const res = await fetch("https://api.zora.co/discover/v2/top-creators");
+        const data = await res.json();
+        const list = document.getElementById("creator-list");
+        list.innerHTML = "";
+
+        data.creators.slice(0, 12).forEach(c => {
+          const div = document.createElement("div");
+          div.className = "creator";
+          div.innerHTML = `
+            <h3>${c.name || "Unknown Creator"}</h3>
+            <p>Address: ${c.address.slice(0,6)}...${c.address.slice(-4)}</p>
+            <p>Items Minted: ${c.itemsMinted}</p>
+          `;
+          list.appendChild(div);
+        });
+      } catch (err) {
+        document.getElementById("creator-list").innerHTML = 
+          "<p>⚠️ Failed to load creators data.</p>";
+        console.error(err);
+      }
+    }
+
+    fetchCreators();
+  </script>
+</body>
+</html>
